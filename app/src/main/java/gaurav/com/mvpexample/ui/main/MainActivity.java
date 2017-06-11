@@ -1,8 +1,6 @@
 package gaurav.com.mvpexample.ui.main;
 
 import android.os.Bundle;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -14,8 +12,7 @@ import android.widget.Toast;
 import gaurav.com.mvpexample.R;
 import gaurav.com.mvpexample.managers.DataManager;
 
-public class MainActivity extends AppCompatActivity implements MainViewInterface,
-        LoaderManager.LoaderCallbacks<MainPresenter> {
+public class MainActivity extends AppCompatActivity implements MainViewInterface {
 
     private EditText editName;
     private TextView textName;
@@ -31,8 +28,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("MVP-Loader Example");
-        // start the loader to load the presenter
-        getSupportLoaderManager().initLoader(1001, null, this);
+        presenter = new MainPresenter(new DataManager(this));
     }
 
     /*
@@ -42,8 +38,7 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
     protected void onStart() {
         super.onStart();
         /*
-        instantiates views and sets on click on them. Presenter has been loaded by the loader
-        before onStart is called so we can safely use it.
+        instantiates views and sets on click on them.
         */
         initView();
     }
@@ -60,25 +55,6 @@ public class MainActivity extends AppCompatActivity implements MainViewInterface
         super.onResume();
         // Attach the view interface as we want UI updated again.
         presenter.attachView(this);
-    }
-
-    /*
-    * Loader API callbacks
-    * */
-
-    @Override
-    public Loader<MainPresenter> onCreateLoader(int id, Bundle args) {
-        return new MainLoader(this, new MainPresenter(new DataManager(this)));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<MainPresenter> loader, MainPresenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @Override
-    public void onLoaderReset(Loader<MainPresenter> loader) {
-
     }
 
     /*
